@@ -1,0 +1,5 @@
+Name: rmate-ooc
+Description: Remote TextMate 2 implemented in ooc
+Version: 0.1.0
+SourcePath: source
+Main: rmate
