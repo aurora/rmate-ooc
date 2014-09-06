@@ -1,4 +1,5 @@
 import structs/ArrayList
+import io/native/FileUnix
 
 // init
 version := "0.0.1"
@@ -8,8 +9,17 @@ version_string := "rmate-ooc #{version} (#{version_date})"
 RMate: class {
     name : String
     
-    host := "localhost"
-    port := "52698"
+    host      := "localhost"
+    port      := "52698"
+    
+    selection   := ""
+    displayname := ""
+    filetype    := ""
+    filepath    := ""
+    
+    nowait?   := false
+    force?    := false
+    verbose?  := false
 
     init: func(=name)
 
@@ -34,22 +44,32 @@ RMate: class {
 " println()
     }
 
-    
+    /**
+     * Message logging.
+     */
+    log: func(msg : String) {
+        if (verbose?) {
+            msg println()
+        }
+    }
 }
 
 /**
  * Main application.
  */
-main: func (args: ArrayList<String>) {
+main: func(args: ArrayList<String>) -> Void {
     iter := args iterator()
     name := iter next()
     
     rmate := RMate new(name)
     
+    filepath : CString = ""
+    
     while (iter hasNext?()) {
         arg := iter next()
         
-        if (arg substring(0, 1) != "-") {
+        if (arg substring(0, 1) != "-" || arg == "-") {
+            filepath = arg
             break
         }
     
@@ -61,9 +81,47 @@ main: func (args: ArrayList<String>) {
             if (iter hasNext?()) {
                 rmate host = iter next()
             }
+        } else if (arg == "--port" || arg == "-p") {
+            if (iter hasNext?()) {
+                rmate port = iter next()
+            }
+        } else if (arg == "--wait" || arg == "-w") {
+            rmate nowait? = false
+        } else if (arg == "--no-wait") {
+            rmate nowait? = true
+        } else if (arg == "--line" || arg == "-l") {
+            if (iter hasNext?()) {
+                rmate selection = iter next()
+            }
+        } else if (arg == "--name" || arg == "-m") {
+            if (iter hasNext?()) {
+                rmate displayname = iter next()
+            }
+        } else if (arg == "--type" || arg == "-t") {
+            if (iter hasNext?()) {
+                rmate filetype = iter next()
+            }
+        } else if (arg == "--force" || arg == "-f") {
+            rmate force? = true
+        } else if (arg == "--verbose" || arg == "-v") {
+            rmate verbose? = true
         }
     }
     
-    rmate showusage()
-}
+    if (filepath == "") {
+        rmate showusage()
+        return
+    }
 
+    if (iter hasNext?()) {
+        "There are more than one files specified. Opening only #{filepath} and ignoring other." println()
+    }
+    
+/*    resolved : CString
+
+
+    realpath(filepath, resolved)
+
+    resolved println()
+*/
+}
