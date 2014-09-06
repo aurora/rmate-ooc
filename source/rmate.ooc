@@ -1,4 +1,5 @@
 import structs/ArrayList
+import os/System
 import io/native/FileUnix
 
 // init
@@ -49,7 +50,7 @@ RMate: class {
      */
     log: func(msg : String) {
         if (verbose?) {
-            msg println()
+            fprintf(stderr, "%s\n", msg toCString());
         }
     }
 }
@@ -63,7 +64,7 @@ main: func(args: ArrayList<String>) -> Void {
     
     rmate := RMate new(name)
     
-    filepath : CString = ""
+    filepath := ""
     
     while (iter hasNext?()) {
         arg := iter next()
@@ -116,12 +117,12 @@ main: func(args: ArrayList<String>) -> Void {
     if (iter hasNext?()) {
         "There are more than one files specified. Opening only #{filepath} and ignoring other." println()
     }
+
+    if (filepath != "-") {
+        rmate displayname = "#{System hostname()}:#{filepath}"
+    } else {
+        rmate displayname = "#{System hostname()}:untitled"
+    }
     
-/*    resolved : CString
-
-
-    realpath(filepath, resolved)
-
-    resolved println()
-*/
+    rmate displayname println()
 }
