@@ -40,7 +40,7 @@ name := ""
 host := "localhost"
 port := "52698"
 
-verbose?  := false
+verbose? := false
 
 /* TODO:
    load configuration file
