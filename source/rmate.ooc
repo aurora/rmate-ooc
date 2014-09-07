@@ -1,5 +1,5 @@
 /*
- * rmate
+ * rmate-ooc
  * Copyright (C) 2014 by Harald Lapp <harald@octris.org>
  *
  * This program is free software: you can redistribute it and/or modify
