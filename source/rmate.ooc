@@ -57,7 +57,7 @@ main: func(args: ArrayList<String>) -> Void {
     displayname := ""
     filetype    := ""
     filepath    := ""
-    realpath    := ""
+    resolvedpath : CString = ""
 
     nowait?   := false
     force?    := false
@@ -117,7 +117,7 @@ main: func(args: ArrayList<String>) -> Void {
     }
 
     if (filepath != "-") {
-        realpath = filepath
+        realpath(filepath as CString, resolvedpath)
 
         displayname = "#{System hostname()}:#{filepath}"
     } else {
@@ -138,7 +138,7 @@ main: func(args: ArrayList<String>) -> Void {
 
     socket out write("open\n")
     socket out write("display-name: #{displayname}\n")
-    socket out write("real-path: #{realpath}\n")
+    socket out write("real-path: #{resolvedpath}\n")
     socket out write("data-on-save: yes\n")
     socket out write("re-activate: yes\n")
     socket out write("token: #{filepath}\n")
