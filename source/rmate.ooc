@@ -16,6 +16,10 @@ port := "52698"
 
 verbose?  := false
 
+/* TODO:
+   load configuration file
+*/
+
 /**
  * Show usage information.
  */
