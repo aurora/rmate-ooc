@@ -25,7 +25,7 @@
  */
 
 import structs/ArrayList
-import os/System
+import os/[System, unistd]
 import io/[File, FileReader]
 import io/native/FileUnix
 import net/TCPSocket
@@ -190,13 +190,11 @@ main: func(args: ArrayList<String>) -> Void {
             socket out write("data: 0\n");
         }
     } else {
-        /* TODO:
-        if [ -t 0 ]; then
-            echo "Reading from stdin, press ^D to stop"
-        else
-            log "Reading from stdin"
-        fi
-        */
+        if (isatty(0)) {
+            "Reading from stdin, press ^D to stop" println()
+        } else {
+            log("Reading from stdin")
+        }
         
         file := FileReader new (stdin)
         data := file readAll()
