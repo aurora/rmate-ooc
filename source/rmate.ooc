@@ -75,6 +75,7 @@ main: func(args: ArrayList<String>) -> Void {
             exit(1)
         } else if (arg == "--version") {
             version_string println()
+            exit(1)
         } else if (arg == "--host" || arg == "-H") {
             if (iter hasNext?()) {
                 host = iter next()
