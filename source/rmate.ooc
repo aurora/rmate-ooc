@@ -133,7 +133,6 @@ main: func(args: ArrayList<String>) -> Void {
         log("Unable to connect to TextMate on #{host}:#{port}")
         exit(1)
     }
-
     log(socket in readLine() trim())
 
     socket out write("open\n")
@@ -180,6 +179,11 @@ main: func(args: ArrayList<String>) -> Void {
     socket out write("\n.\n")
 
     // textmate connection handling
+
+    /* TODO: 
+       fork to background if --no-wait is set
+    */
+    
     pattern := Regexp compile("^([^:]+): *(.+)$")
     
     while (socket in hasNext?()) {
