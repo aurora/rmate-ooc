@@ -1,6 +1,6 @@
 import structs/ArrayList
 import os/System
-import io/File
+import io/[File, FileReader]
 import io/native/FileUnix
 import net/TCPSocket
 
@@ -115,7 +115,7 @@ main: func(args: ArrayList<String>) -> Void {
     }
 
     if (filepath != "-") {
-        realpath := filepath
+        realpath = filepath
 
         displayname = "#{System hostname()}:#{filepath}"
     } else {
@@ -145,22 +145,37 @@ main: func(args: ArrayList<String>) -> Void {
         socket out write("selection: #{selection}\n")
     }
     if (filetype != "") {
+        "filetype: #{filetype}" println()
         socket out write("file-type: #{filetype}\n")
     }
 
     if (filepath != "-") {
-        f := File new(filepath)
+        file := File new(filepath)
         
-        if (f file?()) {
-            socket out write("data: #{f getSize()}\n")
-            socket out write(f read())
+        if (file file?()) {
+            socket out write("data: #{file getSize()}\n")
+            socket out write(file read())
         } else {
             socket out write("data: 0\n");
         }
     } else {
-        // TODO STDIN
-        socket out write("data: 0\n");
+        /* TODO:
+        if [ -t 0 ]; then
+            echo "Reading from stdin, press ^D to stop"
+        else
+            log "Reading from stdin"
+        fi
+        */
+        
+        file := FileReader new (stdin)
+        data := file readAll()
+        file close()
+        
+        socket out write("data: #{data length()}\n")
+        socket out write(data);
     }
+
+    socket out write("\n.\n")
 
     exit(0)
 }
