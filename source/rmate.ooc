@@ -3,6 +3,7 @@ import os/System
 import io/[File, FileReader]
 import io/native/FileUnix
 import net/TCPSocket
+import text/Regexp
 
 // init
 version := "0.0.1"
@@ -122,7 +123,7 @@ main: func(args: ArrayList<String>) -> Void {
         displayname = "#{System hostname()}:untitled"
     }
 
-    // 
+    // communicate with textmate
     socket := TCPSocket new(host, port toInt())
 
     try {
@@ -177,5 +178,49 @@ main: func(args: ArrayList<String>) -> Void {
 
     socket out write("\n.\n")
 
+    // textmate connection handling
+    pattern := Regexp compile("^([^:]+): *(.+)$")
+    
+    while (socket in hasNext?()) {
+        cmd   := socket in readLine() trim()
+        token := ""
+        tmp   := ""
+
+        while (socket in hasNext?()) {
+            reply   := socket in readLine() trim()
+            matches := pattern matches(reply)
+            
+            if (!matches) {
+                break
+            }
+            
+            match (matches group(1)) {
+                case "token" =>
+                    token = matches group(2)
+                case "data" =>
+                    size   := matches group(2) toInt()
+                    buffer := Buffer new(size)
+                
+                    socket receive(buffer, size as SizeT)
+                    
+                    tmp = "#{tmp}#{buffer}"
+            }
+        }
+        
+        match (cmd) {
+            case "close" =>
+                log("Closing #{token}")
+            case "save" =>
+                log("Saving #{token}")
+                
+                if (token != "-") {
+                    file := File new(filepath)
+                    file write(tmp)
+                }
+        }
+    }
+    
+    log("Done")
+    
     exit(0)
 }
