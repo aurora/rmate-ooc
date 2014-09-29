@@ -100,40 +100,41 @@ main: func(args: ArrayList<String>) -> Void {
             break
         }
 
-        if (arg == "--help" || arg == "-h") {
-            showusage()
-            exit(1)
-        } else if (arg == "--version") {
-            version_string println()
-            exit(1)
-        } else if (arg == "--host" || arg == "-H") {
-            if (iter hasNext?()) {
-                host = iter next()
-            }
-        } else if (arg == "--port" || arg == "-p") {
-            if (iter hasNext?()) {
-                port = iter next()
-            }
-        } else if (arg == "--wait" || arg == "-w") {
-            nowait? = false
-        } else if (arg == "--no-wait") {
-            nowait? = true
-        } else if (arg == "--line" || arg == "-l") {
-            if (iter hasNext?()) {
-                selection = iter next()
-            }
-        } else if (arg == "--name" || arg == "-m") {
-            if (iter hasNext?()) {
-                displayname = iter next()
-            }
-        } else if (arg == "--type" || arg == "-t") {
-            if (iter hasNext?()) {
-                filetype = iter next()
-            }
-        } else if (arg == "--force" || arg == "-f") {
-            force? = true
-        } else if (arg == "--verbose" || arg == "-v") {
-            verbose? = true
+        match arg {
+            case "--help" || "-h" =>
+                showusage()
+                exit(1)
+            case "--version" =>
+                version_string println()
+                exit(1)
+            case "--host" || "-H" =>
+                if (iter hasNext?()) {
+                    host = iter next()
+                }
+            case "--port" || "-p" =>
+                if (iter hasNext?()) {
+                    port = iter next()
+                }
+            case "--wait" || "-w" =>
+                nowait? = false
+            case "--no-wait" =>
+                nowait? = true
+            case "--line" || "-l" =>
+                if (iter hasNext?()) {
+                    selection = iter next()
+                }
+            case "--name" || "-m" =>
+                if (iter hasNext?()) {
+                    displayname = iter next()
+                }
+            case "--type" || "-t" =>
+                if (iter hasNext?()) {
+                    filetype = iter next()
+                }
+            case "--force" || "-f" =>
+                force? = true
+            case "--verbose" || "-v" =>
+                verbose? = true
         }
     }
 
